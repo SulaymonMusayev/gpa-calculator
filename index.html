@@ -3,55 +3,66 @@
 <head>
     <title>GPA Kalkulyator</title>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body {
             font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 15px;
             background: #f0f2f5;
         }
         .card {
             background: white;
             border-radius: 20px;
-            padding: 30px;
+            padding: 20px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         h1 {
             color: #1a73e8;
             text-align: center;
+            font-size: 24px;
+            margin: 0 0 20px 0;
         }
         .row {
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 12px;
             align-items: center;
+            flex-wrap: nowrap;
         }
         .row input {
             flex: 1;
-            padding: 12px;
+            padding: 10px;
             border: 1px solid #ddd;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 14px;
+            text-align: center;
+            min-width: 0;
         }
         button {
             background: #1a73e8;
             color: white;
             border: none;
-            padding: 12px 24px;
+            padding: 10px 16px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
         }
         .delete-btn {
             background: #dc3545;
-            padding: 8px 16px;
+            padding: 10px 12px;
+            font-size: 16px;
         }
         .add-btn {
             background: #28a745;
             margin-top: 10px;
             width: 100%;
+            padding: 12px;
+            font-size: 16px;
         }
         .run-btn {
             background: #1a73e8;
@@ -59,10 +70,11 @@
             margin: 20px 0;
             font-size: 20px;
             font-weight: bold;
+            padding: 14px;
         }
         .result {
             background: #e8f0fe;
-            padding: 20px;
+            padding: 15px;
             border-radius: 10px;
             text-align: center;
             margin: 20px 0;
@@ -71,6 +83,24 @@
             font-size: 48px;
             font-weight: bold;
             color: #1a73e8;
+        }
+        .formula {
+            font-size: 11px;
+            color: #666;
+            text-align: center;
+            margin-top: 15px;
+        }
+        @media (max-width: 480px) {
+            .row input {
+                padding: 8px;
+                font-size: 12px;
+            }
+            .delete-btn {
+                padding: 8px 10px;
+            }
+            .gpa {
+                font-size: 36px;
+            }
         }
     </style>
 </head>
@@ -85,45 +115,22 @@
         
         <div id="entries">
             <div class="row">
-                <input type="number" class="grade" placeholder="Baho (0-100)" value="80">
-                <input type="number" class="credit" placeholder="Kredit" value="3">
+                <input type="number" class="grade" placeholder="Baho (0-5)" value="4" step="0.1" min="0" max="5">
+                <input type="number" class="credit" placeholder="Kredit" value="3" step="1" min="0">
                 <button class="delete-btn" onclick="removeRow(this)">✖</button>
             </div>
         </div>
         
         <button class="add-btn" onclick="addRow()">+ Yana fan qo'shish</button>
         <button class="run-btn" onclick="calculateGPA()">🚀 RUN</button>
+        
+        <div class="formula">
+            GPA = Σ(Kredit × Baho) / Σ(Kredit)
+        </div>
     </div>
 
     <script>
-        function convertToGPA(grade) {
-            if (grade >= 90) return 4.0;
-            if (grade >= 80) return 3.0;
-            if (grade >= 70) return 2.0;
-            if (grade >= 60) return 1.0;
-            return 0.0;
-        }
-        
-        function addRow() {
-            const div = document.createElement('div');
-            div.className = 'row';
-            div.innerHTML = `
-                <input type="number" class="grade" placeholder="Baho (0-100)" value="80">
-                <input type="number" class="credit" placeholder="Kredit" value="3">
-                <button class="delete-btn" onclick="removeRow(this)">✖</button>
-            `;
-            document.getElementById('entries').appendChild(div);
-        }
-        
-        function removeRow(btn) {
-            const rows = document.querySelectorAll('.row');
-            if (rows.length > 1) {
-                btn.parentElement.remove();
-            } else {
-                alert("Kamida bitta fan qolishi kerak!");
-            }
-        }
-        
+        // 0-5 oralig'idagi baho to'g'ridan-to'g'ri ishlatiladi
         function calculateGPA() {
             let totalPoints = 0;
             let totalCredits = 0;
@@ -138,14 +145,44 @@
                 if(isNaN(grade)) grade = 0;
                 if(isNaN(credit) || credit <= 0) credit = 0;
                 
-                let gpaPoint = convertToGPA(grade);
-                totalPoints += gpaPoint * credit;
+                // Baho 0-5 oralig'ida cheklash
+                if(grade < 0) grade = 0;
+                if(grade > 5) grade = 5;
+                
+                totalPoints += grade * credit;
                 totalCredits += credit;
             }
             
             let gpa = totalCredits > 0 ? totalPoints / totalCredits : 0;
             document.getElementById('gpaResult').innerText = gpa.toFixed(2);
         }
+        
+        function addRow() {
+            const div = document.createElement('div');
+            div.className = 'row';
+            div.innerHTML = `
+                <input type="number" class="grade" placeholder="Baho (0-5)" value="4" step="0.1" min="0" max="5">
+                <input type="number" class="credit" placeholder="Kredit" value="3" step="1" min="0">
+                <button class="delete-btn" onclick="removeRow(this)">✖</button>
+            `;
+            document.getElementById('entries').appendChild(div);
+        }
+        
+        function removeRow(btn) {
+            const rows = document.querySelectorAll('.row');
+            if (rows.length > 1) {
+                btn.parentElement.remove();
+            } else {
+                alert("Kamida bitta fan qolishi kerak!");
+            }
+        }
+        
+        // Enter bosganda RUN ishlashi uchun
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateGPA();
+            }
+        });
     </script>
 </body>
 </html>
