@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GPA Kalkulyator</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f0f2f5;
+        }
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1a73e8;
+            text-align: center;
+        }
+        .row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        .row input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        button {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .delete-btn {
+            background: #dc3545;
+            padding: 8px 16px;
+        }
+        .add-btn {
+            background: #28a745;
+            margin-top: 10px;
+            width: 100%;
+        }
+        .run-btn {
+            background: #1a73e8;
+            width: 100%;
+            margin: 20px 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .result {
+            background: #e8f0fe;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .gpa {
+            font-size: 48px;
+            font-weight: bold;
+            color: #1a73e8;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🎓 GPA Kalkulyator</h1>
+        
+        <div class="result">
+            <div>Sizning GPA</div>
+            <div class="gpa" id="gpaResult">0.00</div>
+        </div>
+        
+        <div id="entries">
+            <div class="row">
+                <input type="number" class="grade" placeholder="Baho (0-100)" value="80">
+                <input type="number" class="credit" placeholder="Kredit" value="3">
+                <button class="delete-btn" onclick="removeRow(this)">✖</button>
+            </div>
+        </div>
+        
+        <button class="add-btn" onclick="addRow()">+ Yana fan qo'shish</button>
+        <button class="run-btn" onclick="calculateGPA()">🚀 RUN</button>
+    </div>
+
+    <script>
+        function convertToGPA(grade) {
+            if (grade >= 90) return 4.0;
+            if (grade >= 80) return 3.0;
+            if (grade >= 70) return 2.0;
+            if (grade >= 60) return 1.0;
+            return 0.0;
+        }
+        
+        function addRow() {
+            const div = document.createElement('div');
+            div.className = 'row';
+            div.innerHTML = `
+                <input type="number" class="grade" placeholder="Baho (0-100)" value="80">
+                <input type="number" class="credit" placeholder="Kredit" value="3">
+                <button class="delete-btn" onclick="removeRow(this)">✖</button>
+            `;
+            document.getElementById('entries').appendChild(div);
+        }
+        
+        function removeRow(btn) {
+            const rows = document.querySelectorAll('.row');
+            if (rows.length > 1) {
+                btn.parentElement.remove();
+            } else {
+                alert("Kamida bitta fan qolishi kerak!");
+            }
+        }
+        
+        function calculateGPA() {
+            let totalPoints = 0;
+            let totalCredits = 0;
+            
+            const grades = document.querySelectorAll('.grade');
+            const credits = document.querySelectorAll('.credit');
+            
+            for(let i = 0; i < grades.length; i++) {
+                let grade = parseFloat(grades[i].value);
+                let credit = parseFloat(credits[i].value);
+                
+                if(isNaN(grade)) grade = 0;
+                if(isNaN(credit) || credit <= 0) credit = 0;
+                
+                let gpaPoint = convertToGPA(grade);
+                totalPoints += gpaPoint * credit;
+                totalCredits += credit;
+            }
+            
+            let gpa = totalCredits > 0 ? totalPoints / totalCredits : 0;
+            document.getElementById('gpaResult').innerText = gpa.toFixed(2);
+        }
+    </script>
+</body>
+</html>
