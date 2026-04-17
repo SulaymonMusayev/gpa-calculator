@@ -36,7 +36,7 @@
         }
         .row input {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 14px;
@@ -115,8 +115,8 @@
         
         <div id="entries">
             <div class="row">
-                <input type="number" class="grade" placeholder="Baho (0-5)" value="4" step="0.1" min="0" max="5">
-                <input type="number" class="credit" placeholder="Kredit" value="3" step="1" min="0">
+                <input type="number" class="grade" placeholder="Baho (0-5)" value="" step="0.1" min="0" max="5">
+                <input type="number" class="credit" placeholder="Kredit" value="" step="1" min="0">
                 <button class="delete-btn" onclick="removeRow(this)">✖</button>
             </div>
         </div>
@@ -130,7 +130,6 @@
     </div>
 
     <script>
-        // 0-5 oralig'idagi baho to'g'ridan-to'g'ri ishlatiladi
         function calculateGPA() {
             let totalPoints = 0;
             let totalCredits = 0;
@@ -145,7 +144,6 @@
                 if(isNaN(grade)) grade = 0;
                 if(isNaN(credit) || credit <= 0) credit = 0;
                 
-                // Baho 0-5 oralig'ida cheklash
                 if(grade < 0) grade = 0;
                 if(grade > 5) grade = 5;
                 
@@ -161,8 +159,8 @@
             const div = document.createElement('div');
             div.className = 'row';
             div.innerHTML = `
-                <input type="number" class="grade" placeholder="Baho (0-5)" value="4" step="0.1" min="0" max="5">
-                <input type="number" class="credit" placeholder="Kredit" value="3" step="1" min="0">
+                <input type="number" class="grade" placeholder="Baho (0-5)" value="" step="0.1" min="0" max="5">
+                <input type="number" class="credit" placeholder="Kredit" value="" step="1" min="0">
                 <button class="delete-btn" onclick="removeRow(this)">✖</button>
             `;
             document.getElementById('entries').appendChild(div);
@@ -177,7 +175,6 @@
             }
         }
         
-        // Enter bosganda RUN ishlashi uchun
         document.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 calculateGPA();
